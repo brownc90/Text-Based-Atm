@@ -49,7 +49,7 @@ namespace ATM
                     Console.WriteLine("ERROR: That pin is not valid for an existing account.");
                     continue;
                 }
-
+                
                 // Display main user menu
                 Console.WriteLine("What would you like to do?"
                                     + "\n\n"
@@ -72,9 +72,7 @@ namespace ATM
                         Console.WriteLine("Withdraw");
                         break;
                     case 4:             // Exit
-                        Console.WriteLine("Log out and exit? Y/N: ");
-                        if (Console.ReadLine().Equals("Y", StringComparison.InvariantCultureIgnoreCase))
-                            contLoop = false;
+                    case 4:             // Exit -- will break out and fall to exit check
                         break;
                     default:
                         Console.WriteLine("ERROR: That is not a valid selection.");
