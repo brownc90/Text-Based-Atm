@@ -19,24 +19,26 @@ namespace ATM
             // Declare variables
             string pin;
             int menuSel;
-            double balance;
-            Dictionary<string, double> accounts = new Dictionary<string, double>();
+//            decimal dep, draw;
+//            decimal balance;
+            Dictionary<string, decimal> accounts = new Dictionary<string, decimal>();
             bool contLoop = true;
 
             // Add user accounts to the bank accounts dictionary set
             // The key-value pair consists of the user's pin and account balance, respectively
-            accounts.Add("4554", 1000.05);
-            accounts.Add("1235", 2800.00);
-            accounts.Add("6541", 12288.50);
+            accounts.Add("4554", 1000.05m);
+            accounts.Add("1235", 2800m);
+            accounts.Add("6541", 12288.5m);
 
             Console.Write("Welcome! ");
 
+            // Main program loop
             do
             {
                 contLoop = true;
 
                 // Ask user for input
-                Console.WriteLine("Please enter 4-digit pin:");
+                Console.Write("Please enter 4-digit pin:   ");
 
                 // Call processPin method and set returned string to user's entered pin
                 pin = ProcessPin();
@@ -47,37 +49,42 @@ namespace ATM
                 if (!(accounts.ContainsKey(pin)))
                 {
                     Console.WriteLine("ERROR: That pin is not valid for an existing account.");
+                    Console.WriteLine();
                     continue;
                 }
+
+                Console.WriteLine();
                 
                 // Display main user menu
-                Console.WriteLine("What would you like to do?"
-                                    + "\n\n"
+                Console.WriteLine("What would you like to do?\n"
                                     + " 1. View Balance\n"
                                     + " 2. Deposit\n"
                                     + " 3. Withdraw\n"
                                     + " 4. Exit");
                 menuSel = Convert.ToInt32(Console.ReadLine());
 
+                Console.WriteLine();
+
                 // Branch based on user's menu selection
                 switch (menuSel)
                 {
                     case 1:             // View Balance
-                        Console.WriteLine("Balance");
+                        Console.WriteLine(String.Format("Current account balance: {0:C2}", accounts[pin]));
                         break;
                     case 2:             // Deposit
-                        Console.WriteLine("Deposit");
+                        accounts[pin] = Deposit(accounts[pin]);
                         break;
                     case 3:             // Withdraw
-                        Console.WriteLine("Withdraw");
+                        Withdraw();
                         break;
-                    case 4:             // Exit
                     case 4:             // Exit -- will break out and fall to exit check
                         break;
                     default:
                         Console.WriteLine("ERROR: That is not a valid selection.");
                         break;
                 }
+
+                Console.WriteLine();
 
                 // Check if user wants to exit
                 Console.WriteLine("Exit? Y/N: ");
@@ -114,5 +121,31 @@ namespace ATM
 
             return sb.ToString();
         }
+
+        // Function to deposit a user-specified amount into account
+        public static decimal Deposit(decimal bal)
+        {
+            // Declare local variables
+            decimal dep;
+
+            Console.WriteLine("***MAX BALANCE = 99,999.99***");
+            Console.Write("Deposit amount:   ");
+            dep = Convert.ToDecimal(Console.ReadLine());
+            if ((bal + dep) >= 99999.99m)
+            {
+                Console.WriteLine("ERROR: Total account balance cannot go over $99,999.99");
+            }
+            bal += dep;
+            Console.WriteLine(String.Format("Updated account balance: {0:C2}", bal));
+
+            return bal;
+        }
+
+        // Function to withdraw a user-specified amount from account
+        public static void Withdraw()
+        {
+            Console.WriteLine("Withdraw Function");
+        }
+
     }
 }
