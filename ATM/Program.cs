@@ -72,10 +72,11 @@ namespace ATM
                         Console.WriteLine(String.Format("Current account balance: {0:C2}", accounts[pin]));
                         break;
                     case 2:             // Deposit
-                        accounts[pin] = Deposit(accounts[pin]);
+                        Deposit(accounts, pin);
+                        Console.WriteLine(String.Format("Updated account balance: {0:C2}", accounts[pin]));
                         break;
                     case 3:             // Withdraw
-                        Withdraw();
+                        Withdraw(accounts, pin);
                         break;
                     case 4:             // Exit -- will break out and fall to exit check
                         break;
@@ -123,7 +124,7 @@ namespace ATM
         }
 
         // Function to deposit a user-specified amount into account
-        public static decimal Deposit(decimal bal)
+        public static void Deposit(Dictionary<string, decimal> accounts, string pin)
         {
             // Declare local variables
             decimal dep;
@@ -131,20 +132,53 @@ namespace ATM
             Console.WriteLine("***MAX BALANCE = 99,999.99***");
             Console.Write("Deposit amount:   ");
             dep = Convert.ToDecimal(Console.ReadLine());
-            if ((bal + dep) >= 99999.99m)
+            if ((accounts[pin] + dep) >= 99999.99m)
             {
-                Console.WriteLine("ERROR: Total account balance cannot go over $99,999.99");
+                Console.WriteLine("ERROR: Total account balance cannot go over $99,999.99.");
             }
-            bal += dep;
-            Console.WriteLine(String.Format("Updated account balance: {0:C2}", bal));
-
-            return bal;
+            accounts[pin] += dep;
         }
 
         // Function to withdraw a user-specified amount from account
-        public static void Withdraw()
+        public static void Withdraw(Dictionary<string, decimal> accounts, string pin)
         {
-            Console.WriteLine("Withdraw Function");
+            // Declare local variables
+            decimal draw;
+
+            // Loop if specified amount to withdraw is invalid
+            do
+            {
+                Console.WriteLine(String.Format("***CURRENT BALANCE = {0:N2}***", accounts[pin]));
+                Console.Write("Withdrawal amount:   ");
+                draw = Convert.ToDecimal(Console.ReadLine());
+                if ((accounts[pin] - draw) < 0)
+                {
+                    Console.WriteLine("ERROR: Total account balance cannot be overdrawn.\n"
+                                    + "Please enter another amount...");
+                    Console.WriteLine();
+                    continue;
+                }
+                accounts[pin] -= draw;
+
+            } while (true);
+
+            /*
+             * 
+             * pseudo:
+             *      pass in dict and current pin
+             *      
+             *      do loop
+                 *      tell user their current bal
+                 *      get user specified amount
+                 *      store in temp var
+                 *      if bal - temp < 0, give error and continue loop
+                 *      bal - temp
+                 *      display message: Thank you! Please take your funds.
+                 *      
+                 *      
+             *      
+             * 
+             * */
         }
 
     }
