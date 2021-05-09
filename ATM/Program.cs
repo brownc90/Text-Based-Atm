@@ -19,7 +19,6 @@ namespace ATM
             // Declare variables
             string pin;
             int menuSel;
-//            decimal dep, draw;
 //            decimal balance;
             Dictionary<string, decimal> accounts = new Dictionary<string, decimal>();
             bool contLoop = true;
@@ -40,7 +39,7 @@ namespace ATM
                 // Ask user for input
                 Console.Write("Please enter 4-digit pin:   ");
 
-                // Call processPin method and set returned string to user's entered pin
+                // Call ProcessPin method and set returned string to user's entered pin
                 pin = ProcessPin();
                 Console.WriteLine();
 
@@ -77,6 +76,7 @@ namespace ATM
                         break;
                     case 3:             // Withdraw
                         Withdraw(accounts, pin);
+                        Console.WriteLine(String.Format("Updated account balance: {0:C2}", accounts[pin]));
                         break;
                     case 4:             // Exit -- will break out and fall to exit check
                         break;
@@ -128,15 +128,27 @@ namespace ATM
         {
             // Declare local variables
             decimal dep;
+            bool contLoop = true;
 
-            Console.WriteLine("***MAX BALANCE = 99,999.99***");
-            Console.Write("Deposit amount:   ");
-            dep = Convert.ToDecimal(Console.ReadLine());
-            if ((accounts[pin] + dep) >= 99999.99m)
+            // Loop if specified amount to deposit is invalid
+            do
             {
-                Console.WriteLine("ERROR: Total account balance cannot go over $99,999.99.");
-            }
-            accounts[pin] += dep;
+                Console.WriteLine("***MAX BALANCE = 99,999.99***");
+                Console.Write("Deposit amount:   ");
+                dep = Convert.ToDecimal(Console.ReadLine());
+                if ((accounts[pin] + dep) >= 99999.99m)
+                {
+                    Console.WriteLine("ERROR: Total account balance cannot go over $99,999.99.\n"
+                                        + "Please enter another amount...");
+                    Console.WriteLine();
+                    continue;
+                }
+                accounts[pin] += dep;
+
+                // Allow for exit from loop
+                contLoop = false;
+
+            } while (contLoop);
         }
 
         // Function to withdraw a user-specified amount from account
@@ -144,6 +156,7 @@ namespace ATM
         {
             // Declare local variables
             decimal draw;
+            bool contLoop = true;
 
             // Loop if specified amount to withdraw is invalid
             do
@@ -151,7 +164,7 @@ namespace ATM
                 Console.WriteLine(String.Format("***CURRENT BALANCE = {0:N2}***", accounts[pin]));
                 Console.Write("Withdrawal amount:   ");
                 draw = Convert.ToDecimal(Console.ReadLine());
-                if ((accounts[pin] - draw) < 0)
+                if (draw > accounts[pin])
                 {
                     Console.WriteLine("ERROR: Total account balance cannot be overdrawn.\n"
                                     + "Please enter another amount...");
@@ -160,25 +173,14 @@ namespace ATM
                 }
                 accounts[pin] -= draw;
 
-            } while (true);
+                Console.WriteLine();
+                Console.WriteLine("Thank you! Please take your funds.");
 
-            /*
-             * 
-             * pseudo:
-             *      pass in dict and current pin
-             *      
-             *      do loop
-                 *      tell user their current bal
-                 *      get user specified amount
-                 *      store in temp var
-                 *      if bal - temp < 0, give error and continue loop
-                 *      bal - temp
-                 *      display message: Thank you! Please take your funds.
-                 *      
-                 *      
-             *      
-             * 
-             * */
+                // Allow for exit from loop
+                contLoop = false;
+
+            } while (contLoop);
+
         }
 
     }
